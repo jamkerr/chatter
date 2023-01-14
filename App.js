@@ -6,11 +6,11 @@ import Chat from './components/Chat';
 
 import 'react-native-gesture-handler';
 
-// import react Navigation
+// Import react Navigation
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-// Create the navigator
+// Create the navigaton stack
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -25,11 +25,3 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
