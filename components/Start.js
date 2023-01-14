@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Button, Text, TextInput, ImageBackground, Pressable } from "react-native";
+import { StyleSheet, View, Text, TextInput, ImageBackground, Pressable } from "react-native";
 
+// Load background image
 const image = require('../assets/background-image.png');
 
 export default function Start (props) {
 
+    // Set hooks for name (text input) and background color (buttons) states
     const [myName, setMyName] = useState('');
     const [bgColor, setBgColor] = useState('#fff');
 
@@ -81,6 +83,7 @@ const styles = StyleSheet.create({
         width: '88%',
         alignItems: 'center',
         justifyContent: 'space-around',
+        paddingVertical: 10,
         backgroundColor: '#fff',
     },
     nameInput: {
