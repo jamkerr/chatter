@@ -1,48 +1,61 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Button, Text, TextInput, ImageBackground, Pressable } from "react-native";
 
 const image = require('../assets/background-image.png');
-export default class Start extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { text: '' };
-    }
 
-    render() {
-        return (
-            <View style={styles.container}>
-                <ImageBackground source={image} resizeMode="cover" style={styles.image}>
-                    <Text style={styles.title}>Chatter</Text>
-                    <View style={styles.optionsContainer}>
-                        <TextInput
-                            onChangeText={(text) => this.setState({text})}
-                            value={this.state.text}
-                            placeholder='Type your name'
-                            style={styles.nameInput}
-                        >
-                        </TextInput>
-                        <View style={styles.colorPicker}>
-                            <Text style={styles.colorPickerHeading}>Choose Background Color:</Text>
-                            <View style={styles.colorPickerButtonsContainer}>
-                                <Pressable style={[styles.colorPickerButton, styles.colorPickerButton1]}></Pressable>
-                                <Pressable style={[styles.colorPickerButton, styles.colorPickerButton2]}></Pressable>
-                                <Pressable style={[styles.colorPickerButton, styles.colorPickerButton3]}></Pressable>
-                                <Pressable style={[styles.colorPickerButton, styles.colorPickerButton4]}></Pressable>
-                            </View>
+export default function Start (props) {
+
+    const [myName, setMyName] = useState('');
+    const [bgColor, setBgColor] = useState('#fff');
+
+    return (
+        <View style={styles.container}>
+            <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+                <Text style={styles.title}>Chatter</Text>
+                <View style={styles.optionsContainer}>
+                    <TextInput
+                        onChangeText={(myName) => setMyName(myName)}
+                        value={myName}
+                        placeholder='Type your name'
+                        style={styles.nameInput}
+                    ></TextInput>
+                    <View style={styles.colorPicker}>
+                        <Text style={styles.colorPickerHeading}>Choose Background Color:</Text>
+                        <View style={styles.colorPickerButtonsContainer}>
+                            <Pressable
+                                style={[styles.colorPickerButton, styles.colorPickerButton1]}
+                                onPress={() => setBgColor('#090C08')}
+                                value={bgColor}
+                            ></Pressable>
+                            <Pressable
+                                style={[styles.colorPickerButton, styles.colorPickerButton2]}
+                                onPress={() => setBgColor('#474056')}
+                                value={bgColor}
+                            ></Pressable>
+                            <Pressable
+                                style={[styles.colorPickerButton, styles.colorPickerButton3]}
+                                onPress={() => setBgColor('#8A95A5')}
+                                value={bgColor}
+                            ></Pressable>
+                            <Pressable
+                                style={[styles.colorPickerButton, styles.colorPickerButton4]}
+                                onPress={() => setBgColor('#B9C6AE')}
+                                value={bgColor}
+                            ></Pressable>
                         </View>
-                        <Pressable
-                            onPress={() => this.props.navigation.navigate('Chat')}
-                            style={styles.chatButton}
-                        >
-                            <Text
-                                style={styles.chatButtonText}
-                            >Start Chatting</Text>
-                        </Pressable>
                     </View>
-                </ImageBackground>
-            </View>
-        )
-    }
+                    <Pressable
+                        onPress={() => props.navigation.navigate('Chat', {myName: myName, bgColor: bgColor})}
+                        style={styles.chatButton}
+                    >
+                        <Text
+                            style={styles.chatButtonText}
+                        >Start Chatting</Text>
+                    </Pressable>
+                </View>
+            </ImageBackground>
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -57,7 +70,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     title: {
-        flex: 0.56,
+        flex: 0.44,
         flexShrink: 1,
         fontSize: 45,
         fontWeight: '600',

@@ -1,9 +1,16 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { StyleSheet, View, Text, TextInput } from "react-native";
 
-export default function Chat(props) {
+export default function Chat (props) {
+
+    let { myName, bgColor } = props.route.params;
+
+    useEffect(() => {
+        props.navigation.setOptions({ title: myName });
+    }, [])
+
     return (
-        <View style={styles.container}>
+        <View style={{flex: 1, backgroundColor: bgColor }}>
             <Text>Ello.</Text>
         </View>
     )
@@ -12,7 +19,6 @@ export default function Chat(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
     },
