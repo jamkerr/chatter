@@ -78,12 +78,14 @@ const styles = StyleSheet.create({
     },
     optionsContainer: {
         flex: 0.44,
+        width: '88%',
+        alignItems: 'center',
         justifyContent: 'space-around',
         backgroundColor: '#fff',
-        padding: 8,
     },
     nameInput: {
         height: 60,
+        width: '88%',
         borderColor: 'gray',
         borderWidth: 1,
         fontSize: 16,
@@ -91,6 +93,10 @@ const styles = StyleSheet.create({
         color: '#757083',
         opacity: 0.5,
         padding: 8,
+    },
+    colorPicker: {
+        paddingVertical: 5,
+        width: '88%',
     },
     colorPickerHeading: {
         fontSize: 16,
@@ -121,6 +127,7 @@ const styles = StyleSheet.create({
     },
     chatButton: {
         height: 60,
+        width: '88%',
         backgroundColor: '#757083',
         alignItems: 'center',
         justifyContent: 'center',
