@@ -28,6 +28,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5a234ed6-397c-45e1-b7fd-cbaff37f2795"
+      }
+    },
+    "owner": "jamkerr"
   }
 }
