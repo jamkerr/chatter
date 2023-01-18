@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import { StyleSheet, View, Platform, KeyboardAvoidingView, Text, TextInput } from "react-native";
-import { GiftedChat } from 'react-native-gifted-chat';
+import { Bubble, GiftedChat } from 'react-native-gifted-chat';
 
 export default function Chat (props) {
 
@@ -23,6 +23,12 @@ export default function Chat (props) {
                     avatar: 'https://placeimg.com/140/140/any',
                 }
             },
+            {
+                _id: 2,
+                text: 'This is a system message',
+                createdAt: new Date(),
+                system: true,
+            },
         ])
     }, [])
 
@@ -30,10 +36,24 @@ export default function Chat (props) {
         setMessages((olderMessages) => GiftedChat.append(olderMessages, messages));
     }, []);
 
+    const renderBubble = (props) => {
+        return (
+            <Bubble
+                {...props}
+                wrapperStyle={{
+                    right: {
+                        backgroundColor: '#000'
+                    }
+                }}
+            />
+        )
+    }
+
     return (
         // Set styles inline
         <View style={{flex: 1, backgroundColor: bgColor }}>
             <GiftedChat
+                renderBubble={renderBubble}
                 messages={messages}
                 onSend={(messages) => onSend(messages)}
                 user={{
