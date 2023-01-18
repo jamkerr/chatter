@@ -25,7 +25,7 @@ export default function Chat (props) {
             },
             {
                 _id: 2,
-                text: 'This is a system message',
+                text: `${myName} has entered the chat.`,
                 createdAt: new Date(),
                 system: true,
             },
@@ -36,6 +36,7 @@ export default function Chat (props) {
         setMessages((olderMessages) => GiftedChat.append(olderMessages, messages));
     }, []);
 
+    // Customize chat bubbles
     const renderBubble = (props) => {
         return (
             <Bubble
@@ -53,7 +54,7 @@ export default function Chat (props) {
     }
 
     return (
-        // Set styles inline
+        // Set style inline
         <View style={{flex: 1, backgroundColor: bgColor }}>
             <GiftedChat
                 renderBubble={renderBubble}
