@@ -1,74 +1,96 @@
-import React, {useEffect} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { StyleSheet, View, Platform, KeyboardAvoidingView, Text, TextInput } from "react-native";
 import { GiftedChat } from 'react-native-gifted-chat';
 
-// export function OldChat (props) {
+export default function Chat (props) {
 
-//     // Get name an background color via props passes from start screen
-//     let { myName, bgColor } = props.route.params;
+    // Get name and background color via props passes from start screen
+    let { myName, bgColor } = props.route.params;
 
-//     useEffect(() => {
-//         // Set title
-//         props.navigation.setOptions({ title: myName });
-//     }, [])
+    const [messages, setMessages] = useState([]);
 
-//     return (
-//         // Set styles inline
-//         <View style={{flex: 1, backgroundColor: bgColor }}>
-//             <Text>Ello.</Text>
-//         </View>
-//     )
-// }
-
-export default class Chat extends React.Component {
-
-    constructor() {
-        super();
-        this.state = {
-            messages: [],
-        }
-    }
-    componentDidMount() {
-        this.setState({
-            messages: [
-                {
-                    _id: 1,
-                    text: 'Hello developer',
-                    createdAt: new Date(),
-                    user: {
-                        _id: 2,
-                        name: 'React Native',
-                        avatar: 'https://placeimg.com/140/140/any',
-                    }
+    useEffect(() => {
+        // Set title
+        props.navigation.setOptions({ title: myName });
+        setMessages([
+            {
+                _id: 1,
+                text: 'Hello developer',
+                createdAt: new Date(),
+                user: {
+                    _id: 2,
+                    name: 'React Native',
+                    avatar: 'https://placeimg.com/140/140/any',
                 }
-            ]
-        })
-    }
+            },
+        ])
+    }, [])
 
-    onSend(messages = []) {
-        this.setState((previousState) => ({
-            messages: GiftedChat.append(previousState.messages, messages),
-        }));
-    }
+    const onSend = useCallback((messages) => {
+        setMessages((olderMessages) => GiftedChat.append(olderMessages, messages));
+    }, []);
 
-    render() {
-        return (
-            <View style={styles.container}>
-                <GiftedChat
-                    messages={this.state.messages}
-                    onSend={(messages) => this.onSend(messages)}
-                    user={{
-                        _id: 1,
-                    }}
-                />
-                { Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' /> : null }
-            </View>
-        )
-    }
+    return (
+        // Set styles inline
+        <View style={{flex: 1, backgroundColor: bgColor }}>
+            <GiftedChat
+                messages={messages}
+                onSend={(messages) => onSend(messages)}
+                user={{
+                    _id: 1,
+                }}
+            />
+            { Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' /> : null }
+        </View>
+    )
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    }
-})
+// export class ComponentChat extends React.Component {
+
+//     constructor() {
+//         super();
+//         this.state = {
+//             messages: [],
+//         }
+//     }
+//     componentDidMount() {
+//         let {myName, bgColor} = this.props.route.params;
+//         this.props.navigation.setOptions({ title: myName })
+//         this.setState({
+//             messages: [
+//                 {
+//                     _id: 1,
+//                     text: 'Hello developer',
+//                     createdAt: new Date(),
+//                     user: {
+//                         _id: 2,
+//                         name: 'React Native',
+//                         avatar: 'https://placeimg.com/140/140/any',
+//                     }
+//                 }
+//             ]
+//         })
+//     }
+
+//     onSend(messages = []) {
+//         this.setState((previousState) => ({
+//             messages: GiftedChat.append(previousState.messages, messages),
+//         }));
+//     }
+
+//     render() {
+//         return (
+//             <View style={{flex: 1, backgroundColor: this.bgColor }}>
+//                 <GiftedChat
+//                     messages={this.state.messages}
+//                     onSend={(messages) => this.onSend(messages)}
+//                     user={{
+//                         _id: 1,
+//                     }}
+//                 />
+//                 { Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' /> : null }
+//             </View>
+//         )
+//     }
+// }
+
