@@ -41,6 +41,9 @@ export default function Chat (props) {
             <Bubble
                 {...props}
                 wrapperStyle={{
+                    left: {
+                        backgroundColor: '#fcf'
+                    },
                     right: {
                         backgroundColor: '#000'
                     }
