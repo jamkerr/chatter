@@ -1,6 +1,8 @@
 import React, {useCallback, useEffect, useState} from "react";
 import { StyleSheet, View, Platform, KeyboardAvoidingView, Text, TextInput } from "react-native";
 import { Bubble, GiftedChat } from 'react-native-gifted-chat';
+import firebase from 'firebase';
+import firestore from 'firebase';
 
 export default function Chat (props) {
 
@@ -8,6 +10,24 @@ export default function Chat (props) {
     let { myName, bgColor } = props.route.params;
 
     const [messages, setMessages] = useState([]);
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDwbpwCk6AIuYhyML0LcTDltFuy2W0a90k",
+        authDomain: "chatter-web-app-150d5.firebaseapp.com",
+        projectId: "chatter-web-app-150d5",
+        storageBucket: "chatter-web-app-150d5.appspot.com",
+        messagingSenderId: "360208476019",
+        appId: "1:360208476019:web:74e2ca3410912d405a8706",
+        measurementId: "G-FRVJJJ8TNQ"
+    };
+    
+    // Initialize Firebase
+    if (!firebase.apps.length){
+        firebase.initializeApp(firebaseConfig);
+    }
+    // Initialize Cloud Firestore and get a reference to the service
+    const db = firebase.firestore();
+    const referenceMessages = db.collection('messages');
 
     useEffect(() => {
         // Set title
