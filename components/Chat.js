@@ -31,6 +31,13 @@ export default function Chat (props) {
     const db = firebase.firestore();
     const referenceMessages = db.collection('messages');
 
+    // On send, add new message to older messages so that it's displayed
+    const onSend = useCallback((messages) => {
+        setMessages((olderMessages) => GiftedChat.append(olderMessages, messages));
+        const message = messages[0];
+        addMessage(message);
+    }, []);
+
     const addMessage = (message) => {
         referenceMessages.add({
             _id: message._id,
@@ -54,8 +61,9 @@ export default function Chat (props) {
         setMessages(messages);
     }
 
-
     useEffect(() => {
+        //Mounting
+        
         // Set title
         props.navigation.setOptions({ title: myName });
 
@@ -89,13 +97,6 @@ export default function Chat (props) {
         };
 
     }, [])
-
-    // On send, add new message to older messages so that it's displayed
-    const onSend = useCallback((messages) => {
-        setMessages((olderMessages) => GiftedChat.append(olderMessages, messages));
-        const message = messages[0];
-        addMessage(message);
-    }, []);
 
     // Customize chat bubbles
     const renderBubble = (props) => {
