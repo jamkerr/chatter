@@ -10,6 +10,8 @@ export default function Chat (props) {
     let { myName, bgColor } = props.route.params;
 
     const [messages, setMessages] = useState([]);
+    // const [loggingInText, setLoggingInText] = useState('We\'re just signing you in');
+    // const [user, setUser] = useState({});
 
     const firebaseConfig = {
         apiKey: "AIzaSyDwbpwCk6AIuYhyML0LcTDltFuy2W0a90k",
@@ -29,31 +31,70 @@ export default function Chat (props) {
     const db = firebase.firestore();
     const referenceMessages = db.collection('messages');
 
+    const addMessage = (message) => {
+        referenceMessages.add({
+            _id: message._id,
+            createdAt: message.createdAt,
+            text: message.text,
+            user: message.user
+        });
+    }
+
+    const onCollectionUpdate = (querySnapshot) => {
+        const messages = [];
+        querySnapshot.forEach((doc) => {
+            let data = doc.data();
+            messages.push({
+                _id: data._id,
+                text: data.text,
+                createdAt: data.createdAt.toDate(),
+                user: data.user,
+            });
+        });
+        setMessages(messages);
+    }
+
+
     useEffect(() => {
         // Set title
         props.navigation.setOptions({ title: myName });
-        setMessages([
-            {
-                _id: 1,
-                text: 'Hello developer',
-                createdAt: new Date(),
-                user: {
-                    _id: 2,
-                    name: 'React Native',
-                    avatar: 'https://placeimg.com/140/140/any',
-                }
-            },
-            {
-                _id: 2,
-                text: `${myName} has entered the chat.`,
-                createdAt: new Date(),
-                system: true,
-            },
-        ])
+
+        const unsubscribe = referenceMessages.orderBy('createdAt', 'desc').onSnapshot(onCollectionUpdate);
+        // const authUnsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
+
+        //     // If no user, try to sign in
+        //     if (!user) {
+        //         await firebase.auth().signInAnonymously();
+        //     }
+          
+        //     // Update user state with currently active user data
+        //     setUser({
+        //         uid: user.uid,
+        //         name: myName,
+        //     });
+      
+        //     setLoggingInText(`Hey ${user.name}!`);
+      
+        //     // create a reference to the active user's messages
+        //     const referenceMessagesUser = referenceMessages.where("uid", "==", user.uid);
+      
+        //     // listen for collection changes for current user
+        //     const unsubscribeMessagesUser = referenceMessagesUser.onSnapshot(onCollectionUpdate);
+        // });
+
+        // Unmounting
+        return () => {
+            unsubscribe();
+            // authUnsubscribe();
+        };
+
     }, [])
 
+    // On send, add new message to older messages so that it's displayed
     const onSend = useCallback((messages) => {
         setMessages((olderMessages) => GiftedChat.append(olderMessages, messages));
+        const message = messages[0];
+        addMessage(message);
     }, []);
 
     // Customize chat bubbles
@@ -76,12 +117,14 @@ export default function Chat (props) {
     return (
         // Set style inline
         <View style={{flex: 1, backgroundColor: bgColor }}>
+            {/* <Text>{loggingInText}</Text> */}
             <GiftedChat
                 renderBubble={renderBubble}
                 messages={messages}
                 onSend={(messages) => onSend(messages)}
                 user={{
                     _id: 1,
+                    name: myName
                 }}
             />
             { Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' /> : null }
