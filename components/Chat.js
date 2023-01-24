@@ -3,6 +3,7 @@ import { StyleSheet, View, Platform, KeyboardAvoidingView, Text, TextInput } fro
 import { Bubble, GiftedChat } from 'react-native-gifted-chat';
 import firebase from 'firebase';
 import firestore from 'firebase';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Chat (props) {
 
@@ -74,6 +75,45 @@ export default function Chat (props) {
         });
         setMessages(messages);
     }
+
+    // Function to get messages from async storage and set them to state
+    const getMessages = async () => {
+        let messages = '';
+        try { 
+            messages = await AsyncStorage.getItem('messages') || [];
+            setMessages({
+                messages: JSON.parse(messages)
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // Function to save messages to async storage
+    const saveMessages = async (messages) => {
+        try {
+            await AsyncStorage.setItem('messages', JSON.stringify(messages));
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // Function to delete all messages from async storage and state
+    const deleteMessages = async () => {
+        try {
+            await AsyncStorage.removeItem('messages');
+            setMessages({
+                messages: []
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // Save messages to async storage when state of messages changes
+    useEffect(() => {
+        saveMessages(messages);
+    }, [messages])
 
     useEffect(() => {
         //Mounting
