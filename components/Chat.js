@@ -90,12 +90,10 @@ export default function Chat (props) {
 
     // Function to save messages to async storage
     const saveMessages = async (messages) => {
-        if (messages.length) {
-            try {
-                await AsyncStorage.setItem('messages', JSON.stringify(messages));
-            } catch (error) {
-                console.log(error);
-            }
+        try {
+            await AsyncStorage.setItem('messages', JSON.stringify(messages));
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -111,10 +109,38 @@ export default function Chat (props) {
         }
     }
 
+    // Function to save user to async storage
+    const saveUser = async (user) => {
+        try {
+            await AsyncStorage.setItem('user', JSON.stringify(user));
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // Function to get user from async storage and set them to state
+    const getUser = async () => {
+        try { 
+            let user = await AsyncStorage.getItem('user') || {};
+            return JSON.parse(user);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     // Save messages to async storage when state of messages changes
     useEffect(() => {
-        saveMessages(messages);
+        if (messages.length) {
+            saveMessages(messages);
+        }
     }, [messages])
+
+    // Save user to async storage when state of user changes
+    useEffect(() => {
+        if (user._id) {
+            saveUser(user);
+        }
+    }, [user])
 
     useEffect(() => {
         //Mounting
@@ -156,6 +182,7 @@ export default function Chat (props) {
 
         } else {
             setLoggingInText('Looks like you\'re offline.');
+            getUser().then((userObj) => setUser(userObj));           
             getMessages().then((messagesObj) => setMessages(messagesObj));
         }
 
