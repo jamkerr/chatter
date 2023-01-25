@@ -1,9 +1,10 @@
 import React, {useCallback, useEffect, useState} from "react";
-import { StyleSheet, View, Platform, KeyboardAvoidingView, Text, TextInput } from "react-native";
-import { Bubble, GiftedChat } from 'react-native-gifted-chat';
+import { StyleSheet, View, Platform, KeyboardAvoidingView, Text } from "react-native";
+import { Bubble, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
 import firebase from 'firebase';
 import firestore from 'firebase';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 
 export default function Chat (props) {
 
@@ -18,6 +19,7 @@ export default function Chat (props) {
         name: '',
         avatar: '',
     });
+    const isOnline = useNetInfo().isConnected;
 
     // Firebase config
     const firebaseConfig = {
@@ -78,12 +80,9 @@ export default function Chat (props) {
 
     // Function to get messages from async storage and set them to state
     const getMessages = async () => {
-        let messages = '';
         try { 
-            messages = await AsyncStorage.getItem('messages') || [];
-            setMessages({
-                messages: JSON.parse(messages)
-            });
+            let messages = await AsyncStorage.getItem('messages') || [];
+            return JSON.parse(messages);
         } catch (error) {
             console.log(error);
         }
@@ -91,10 +90,12 @@ export default function Chat (props) {
 
     // Function to save messages to async storage
     const saveMessages = async (messages) => {
-        try {
-            await AsyncStorage.setItem('messages', JSON.stringify(messages));
-        } catch (error) {
-            console.log(error);
+        if (messages.length) {
+            try {
+                await AsyncStorage.setItem('messages', JSON.stringify(messages));
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 
@@ -120,39 +121,45 @@ export default function Chat (props) {
 
         // Set title
         props.navigation.setOptions({ title: myName });
+        
+        if (isOnline) {
+            // Listen for user changes
+            const authUnsubscribe = firebase.auth().onAuthStateChanged(async (authuser) => {
 
-        // Listen for user changes
-        const authUnsubscribe = firebase.auth().onAuthStateChanged(async (authuser) => {
+                // If no user, try to sign in
+                if (!authuser) {
+                    await firebase.auth().signInAnonymously();
+                }
+            
+                // Update user state with currently active user data
+                setUser({
+                    _id: authuser.uid,
+                    name: myName,
+                    avatar: "https://placeimg.com/140/140/any"
+                });
 
-            // If no user, try to sign in
-            if (!authuser) {
-                await firebase.auth().signInAnonymously();
-            }
-          
-            // Update user state with currently active user data
-            setUser({
-                _id: authuser.uid,
-                name: myName,
-                avatar: "https://placeimg.com/140/140/any"
+                // Clear logging in text when user is signed in
+                setLoggingInText('');
+
             });
 
-            // Clear logging in text when user is signed in
-            setLoggingInText('');
+            // Listen for message changes
+            const unsubscribe = referenceMessages.orderBy('createdAt', 'desc').onSnapshot(onCollectionUpdate);
 
-        });
+            // Unmounting
+            return () => {
+                // Stop listening for message changes
+                unsubscribe();
+                // Stope listening for user changes
+                authUnsubscribe();
+            };
 
-        // Listen for message changes
-        const unsubscribe = referenceMessages.orderBy('createdAt', 'desc').onSnapshot(onCollectionUpdate);
+        } else {
+            setLoggingInText('Looks like you\'re offline.');
+            getMessages().then((messagesObj) => setMessages(messagesObj));
+        }
 
-        // Unmounting
-        return () => {
-            // Stop listening for message changes
-            unsubscribe();
-            // Stope listening for user changes
-            authUnsubscribe();
-        };
-
-    }, [])
+    }, [isOnline])
 
     // Customize chat bubbles
     const renderBubble = (props) => {
@@ -171,12 +178,22 @@ export default function Chat (props) {
         )
     }
 
+    // Input toolbar only shows when online
+    const renderInputToolbar = (props) => {
+        if (!isOnline) {
+            return null;
+        } else {
+            return <InputToolbar {...props} />;
+        }
+    }
+
     return (
         // Set style inline
         <View style={{flex: 1, backgroundColor: bgColor }}>
             <Text>{loggingInText}</Text>
             <GiftedChat
                 renderBubble={renderBubble}
+                renderInputToolbar={renderInputToolbar}
                 messages={messages}
                 onSend={(messages) => onSend(messages)}
                 user={user}
