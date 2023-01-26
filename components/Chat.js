@@ -112,7 +112,9 @@ export default function Chat (props) {
     // Function to save user to async storage
     const saveUser = async (user) => {
         try {
-            await AsyncStorage.setItem('user', JSON.stringify(user));
+            if (user) {
+                await AsyncStorage.setItem('user', JSON.stringify(user));
+            }
         } catch (error) {
             console.log(error);
         }
@@ -121,8 +123,21 @@ export default function Chat (props) {
     // Function to get user from async storage and set them to state
     const getUser = async () => {
         try { 
-            let user = await AsyncStorage.getItem('user') || {};
-            return JSON.parse(user);
+            let storedUser = await AsyncStorage.getItem('user');
+            if (storedUser != null) {
+                return JSON.parse(storedUser);
+            } else {
+                return user;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // Function to delete user from async storage
+    const deleteStoredUser = async () => {
+        try {
+            await AsyncStorage.removeItem('user');
         } catch (error) {
             console.log(error);
         }
@@ -149,6 +164,7 @@ export default function Chat (props) {
         props.navigation.setOptions({ title: myName });
         
         if (isOnline) {
+
             // Listen for user changes
             const authUnsubscribe = firebase.auth().onAuthStateChanged(async (authuser) => {
 
@@ -176,13 +192,21 @@ export default function Chat (props) {
             return () => {
                 // Stop listening for message changes
                 unsubscribe();
-                // Stope listening for user changes
+                // Stop listening for user changes
                 authUnsubscribe();
             };
 
-        } else {
+        // The useNetInfo hook tends to return null when initializing,
+        // so only retrieve from async storage when actually offline, i.e. false
+        } else if (isOnline === false ) {
             setLoggingInText('Looks like you\'re offline.');
-            getUser().then((userObj) => setUser(userObj));           
+
+            // Get user from async storage, and only assign to state if it's truthy
+            getUser().then((userObj) => {
+                if (userObj) {
+                    setUser(userObj);
+                }
+            });
             getMessages().then((messagesObj) => setMessages(messagesObj));
         }
 
