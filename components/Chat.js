@@ -5,6 +5,7 @@ import firebase from 'firebase';
 import firestore from 'firebase';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
+import CustomActions from './CustomActions';
 
 export default function Chat (props) {
 
@@ -238,6 +239,10 @@ export default function Chat (props) {
         }
     }
 
+    const renderCustomActions = (props) => {
+        return <CustomActions {...props} />;
+    };
+
     return (
         // Set style inline
         <View style={{flex: 1, backgroundColor: bgColor }}>
@@ -245,6 +250,7 @@ export default function Chat (props) {
             <GiftedChat
                 renderBubble={renderBubble}
                 renderInputToolbar={renderInputToolbar}
+                renderActions={renderCustomActions}
                 messages={messages}
                 onSend={(messages) => onSend(messages)}
                 user={user}
