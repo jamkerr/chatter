@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import * as ImagePicker from 'expo-image-picker';
-// import * as Location from 'expo-location';
+import * as Location from 'expo-location';
 import firebase from 'firebase';
 
 export default function CustomActions (props) {
@@ -28,7 +28,7 @@ export default function CustomActions (props) {
                     return takePhoto();
                 case 2:
                     console.log('user wants to get their location');
-                    return;
+                    return getLocation();
                 default:
                 }
             },
@@ -67,16 +67,21 @@ export default function CustomActions (props) {
         }
     }
 
-    // const getLocation = async () => {
-    //     const { status } = await Location.requestForegroundPermissionsAsync();
-    //     if(status === 'granted') {
-    //         let result = await Location.getCurrentPositionAsync({});
+    const getLocation = async () => {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if(status === 'granted') {
+            let result = await Location.getCurrentPositionAsync({});
         
-    //         if (result) {
-    //             setLocation(result);
-    //         }
-    //     }
-    // }
+            if (result) {
+                props.onSend({
+                    location: {
+                        latitude: result.coords.latitude,
+                        longitude: result.coords.longitude,
+                    }
+                });
+            }
+        }
+    }
 
     const uploadImageFetch = async (uri) => {
         const blob = await new Promise((resolve, reject) => {

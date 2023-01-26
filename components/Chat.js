@@ -6,6 +6,7 @@ import firestore from 'firebase';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import CustomActions from './CustomActions';
+import MapView from 'react-native-maps';
 
 export default function Chat (props) {
 
@@ -57,6 +58,7 @@ export default function Chat (props) {
             user: message.user,
             userid: message.user._id,
             image: message.image || null,
+            location: message.location || null,
         });
     }
 
@@ -72,10 +74,11 @@ export default function Chat (props) {
                 user: {
                     _id: data.user._id,
                     name: data.user.name,
-                    avatar: data.user.avatar || '',
+                    avatar: data.user.avatar,
                 },
                 userid: data.user._id,
                 image: data.image || null,
+                location: data.location || null,
             });
         });
         setMessages(messages);
@@ -245,6 +248,29 @@ export default function Chat (props) {
         return <CustomActions {...props} />;
     };
 
+    const renderCustomView = (props) => {
+        const { currentMessage } = props;
+        if (currentMessage.location) {
+            return (
+                <MapView
+                    style={{
+                        width: 150,
+                        height: 100,
+                        borderRadius: 13,
+                        margin: 3
+                    }}
+                    region={{
+                        latitude: currentMessage.location.latitude,
+                        longitude: currentMessage.location.longitude,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    }}
+                />
+            );
+        }
+        return null;
+      }
+
     return (
         // Set style inline
         <View style={{flex: 1, backgroundColor: bgColor }}>
@@ -253,6 +279,7 @@ export default function Chat (props) {
                 renderBubble={renderBubble}
                 renderInputToolbar={renderInputToolbar}
                 renderActions={renderCustomActions}
+                renderCustomView={renderCustomView}
                 messages={messages}
                 onSend={(messages) => onSend(messages)}
                 user={user}
