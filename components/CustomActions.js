@@ -61,7 +61,8 @@ export default function CustomActions (props) {
             }).catch(error => console.log(error));
         
             if (!result.canceled) {
-                setImage(result);  
+                const imageUri = await uploadImageFetch(result.assets[0].uri);
+                props.onSend({ image: imageUri }); 
             }
         }
     }
