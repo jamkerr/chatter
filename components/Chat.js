@@ -53,9 +53,10 @@ export default function Chat (props) {
         referenceMessages.add({
             _id: message._id,
             createdAt: message.createdAt,
-            text: message.text,
+            text: message.text || null,
             user: message.user,
             userid: message.user._id,
+            image: message.image || null,
         });
     }
 
@@ -74,6 +75,7 @@ export default function Chat (props) {
                     avatar: data.user.avatar || '',
                 },
                 userid: data.user._id,
+                image: data.image || null,
             });
         });
         setMessages(messages);
