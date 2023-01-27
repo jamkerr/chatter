@@ -13,7 +13,7 @@ You can pick a username and background color.
 Then, with your friends in real-time, you can:
 
 - Send messages
-- Send images (either from strage or taken directly with your device's camera)
+- Send images (either from storage or taken directly with your device's camera)
 - Share your location
 
 ## Run locally
@@ -28,7 +28,7 @@ To build the app:
 1. Clone the [Chatter repository](https://github.com/jamkerr/chatter)
 2. Navigate to the project folder and run `npm install`
 3. Run `npm start`
-4. Either scan the QR code with your device using the [Expo Go app](https://expo.dev/client), or type `a` in your console to build the project for e.g. Android Studio.
+4. Either scan the QR code with your device using the [Expo Go app](https://expo.dev/client), or type `a` in your console to build the project for e.g. Android Studio
 5. You should now be running Chatter!
 
 ## Database
