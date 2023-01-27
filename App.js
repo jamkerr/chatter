@@ -20,7 +20,6 @@ export default function App() {
         <Stack.Screen name='Start' component={Start} />
         <Stack.Screen name='Chat' component={Chat} />
       </Stack.Navigator>
-      <StatusBar style="auto" />
     </NavigationContainer>
   );
 }
