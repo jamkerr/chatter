@@ -218,14 +218,35 @@ export default function Chat (props) {
 
     }, [isOnline])
 
+    
+    const getColor = (username) => {
+        let sumChars = 0;
+        for(let i = 0;i < username.length;i++){
+            sumChars += username.charCodeAt(i);
+            // console.log(sumChars)
+        }
+        const bubbleColors = [
+            '#cef0cc', // green
+            '#f0cfcc', // red
+            '#ccf0ea', // light blue
+            '#ccd1f0', // darker blue
+            '#efccf0', // purple
+            '#ebebeb', // grey
+        ];
+        console.log(sumChars % bubbleColors.length)
+        return bubbleColors[sumChars % bubbleColors.length];
+    }
+
     // Customize chat bubbles
     const renderBubble = (props) => {
+        const { currentMessage } = props;
+
         return (
             <Bubble
                 {...props}
                 wrapperStyle={{
                     left: {
-                        backgroundColor: '#fcf'
+                        backgroundColor: getColor(currentMessage.user.name)
                     },
                     right: {
                         backgroundColor: '#000'
@@ -286,6 +307,7 @@ export default function Chat (props) {
                 renderInputToolbar={renderInputToolbar}
                 renderActions={renderCustomActions}
                 renderCustomView={renderCustomView}
+                renderUsernameOnMessage={true}
                 messages={messages}
                 onSend={(messages) => onSend(messages)}
                 user={user}
