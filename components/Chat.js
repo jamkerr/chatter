@@ -183,7 +183,7 @@ export default function Chat (props) {
                 setUser({
                     _id: authuser.uid,
                     name: myName,
-                    avatar: "https://placeimg.com/140/140/any"
+                    avatar: `https://i.pravatar.cc/140?u=${authuser.uid}`
                 });
 
                 // Clear logging in text when user is signed in
