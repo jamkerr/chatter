@@ -205,7 +205,7 @@ export default function Chat (props) {
         // The useNetInfo hook tends to return null when initializing,
         // so only retrieve from async storage when actually offline, i.e. false
         } else if (isOnline === false ) {
-            setLoggingInText('Looks like you\'re offline.');
+            setLoggingInText('It looks like you\'re offline.');
 
             // Get user from async storage, and only assign to state if it's truthy
             getUser().then((userObj) => {
@@ -223,7 +223,6 @@ export default function Chat (props) {
         let sumChars = 0;
         for(let i = 0;i < username.length;i++){
             sumChars += username.charCodeAt(i);
-            // console.log(sumChars)
         }
         const bubbleColors = [
             '#cef0cc', // green
@@ -233,7 +232,6 @@ export default function Chat (props) {
             '#efccf0', // purple
             '#ebebeb', // grey
         ];
-        console.log(sumChars % bubbleColors.length)
         return bubbleColors[sumChars % bubbleColors.length];
     }
 
@@ -301,7 +299,6 @@ export default function Chat (props) {
     return (
         // Set style inline
         <View style={{flex: 1, backgroundColor: bgColor }}>
-            <Text>{loggingInText}</Text>
             <GiftedChat
                 renderBubble={renderBubble}
                 renderInputToolbar={renderInputToolbar}
@@ -316,6 +313,7 @@ export default function Chat (props) {
                 accessibilityLabel='Chat text input field'
                 accessibilityHint='Lets you type a message and send it with the "Send" button'
             />
+            <Text style={{ backgroundColor: 'white', textAlign: 'center' }}>{loggingInText}</Text>
             { Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' /> : null }
         </View>
     )
