@@ -111,7 +111,14 @@ export default function CustomActions (props) {
     }
 
     return (
-        <TouchableOpacity style={[styles.container]} onPress={onActionPress}>
+        <TouchableOpacity
+            style={[styles.container]}
+            onPress={onActionPress}
+            accessible={true}
+            accessibilityLabel="More options"
+            accessibilityHint="Lets you choose to send an image or your geolocation."
+            accessibilityRole="button"
+            >
             <View style={[styles.wrapper]}>
                 <Text style={[styles.iconText]}>+</Text>
             </View>
