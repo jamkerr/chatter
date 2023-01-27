@@ -312,6 +312,9 @@ export default function Chat (props) {
                 onSend={(messages) => onSend(messages)}
                 user={user}
                 showUserAvatar={true}
+                accessible={true}
+                accessibilityLabel='Chat text input field'
+                accessibilityHint='Lets you type a message and send it with the "Send" button'
             />
             { Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' /> : null }
         </View>
