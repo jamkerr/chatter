@@ -16,6 +16,10 @@ Then, with your friends in real-time, you can:
 - Send images (either from storage or taken directly with your device's camera)
 - Share your location
 
+## Screenshot
+
+![A screenshot of the home screen, with a name entered and a background color selected.](./screenshots/screenshot-home-screen.png)
+![A screenshot of the chat screen, with a green background color, and text, image, and location content visible](./screenshots/screenshot-chat-screen.png)
 ## Run locally
 
 You can run Chatter on your device using the [Expo Go app](https://expo.dev/client). You could also use a simulator like Android Studio if you wanted to.
